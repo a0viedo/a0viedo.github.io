@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://elendur.com/"/>
-  <updated>2016-06-27T19:45:33.691Z</updated>
+  <updated>2016-06-27T20:13:26.548Z</updated>
   <id>http://elendur.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://elendur.com/2016/06/23/getting-hexo-set-up-en/"/>
     <id>http://elendur.com/2016/06/23/getting-hexo-set-up-en/</id>
     <published>2016-06-23T16:43:23.000Z</published>
-    <updated>2016-06-27T19:45:33.691Z</updated>
+    <updated>2016-06-27T20:13:26.548Z</updated>
     
     <content type="html">&lt;p&gt;I’ve been writing some things that could fit into a blog post(&lt;a href=&quot;https://github.com/a0viedo/node-tooling&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;node-tooling&lt;/a&gt; or some of the resources of &lt;a href=&quot;https://github.com/a0viedo/fullstack&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;fullstack&lt;/a&gt;) but I never dedicated time and effort to set up one. This is the story on how I modified a blog framework to suit my needs.&lt;/p&gt;
 &lt;h2 id=&quot;Narrowing-down-the-contenders&quot;&gt;&lt;a href=&quot;#Narrowing-down-the-contenders&quot; class=&quot;headerlink&quot; title=&quot;Narrowing down the contenders&quot;&gt;&lt;/a&gt;Narrowing down the contenders&lt;/h2&gt;&lt;p&gt;For a few weeks now I’ve been working on a side project with lots of data visualizations and thought it would be a good idea not only to write about it but also include some interactions in the blog post itself. I wanted the flexibility to modify the HTML and JavaScript (more like inserting chunks of HTML and JavaScript in this case) as I see fit.&lt;br&gt;These requirements ended up ruling out &lt;a href=&quot;https://wordpress.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Wordpress&lt;/a&gt;, &lt;a href=&quot;https://jekyllrb.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Jekyll&lt;/a&gt;, &lt;a href=&quot;https://ghost.org/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Ghost&lt;/a&gt; and &lt;a href=&quot;http://medium.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Medium&lt;/a&gt; as viable options. It’s not that Wordpress would restrict you to modify its source but PHP nor their huge codebase are things I’m familiar with. This is were Hexo comes in and, if necessary, I would find easier to look at JavaScript code.&lt;/p&gt;
@@ -48,11 +48,11 @@
     </summary>
     
     
-      <category term="hexo" scheme="http://elendur.com/tags/hexo/"/>
-    
       <category term="blog" scheme="http://elendur.com/tags/blog/"/>
     
       <category term="static sites" scheme="http://elendur.com/tags/static-sites/"/>
+    
+      <category term="hexo.io" scheme="http://elendur.com/tags/hexo-io/"/>
     
   </entry>
   
