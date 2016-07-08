@@ -230,6 +230,58 @@ function drawGeneralGraphs(parsedRows, fieldMap, domElement) {
     padding: 60,
     textLabel: 'Conformidad promedio total: ' + totalAverages.conformity.toFixed(2)
   });
+
+  // var experienceSalaryData = parsedRows.map(function(e) {
+  //   var xValue;
+
+  //   if(e[fieldMap.experience] === '10+') {
+  //     xValue = 10;
+  //   } else if(e[fieldMap.experience] === 'Menos de un año') {
+  //     xValue = 0.5;
+  //   } else {
+  //     xValue = getAvgFromFirstAndLast(e[fieldMap.experience]);
+  //   }
+
+  //   return {
+  //     yValue: e[fieldMap.salary],
+  //     xValue: xValue,
+  //     label: e[fieldMap.province]
+  //   };
+  // });
+
+  // graphScatterPlot(experienceSalaryData, domElement, {
+  //   xAxis: {
+  //     text: 'Experiencia'
+  //   },
+  //   yAxis: {
+  //     text: 'Salario'
+  //   },
+  //   width: DEFAULT_WIDTH,
+  //   height: DEFAULT_HEIGHT,
+  //   id: 'scatterPlotExperienceSalary'
+  // });
+
+  // // scatterPlot avg conformity vs avg salary
+  // var conformityAndSalary = parsedRows.map(function(e) {
+  //   return {
+  //     xValue: e[fieldMap.conformity],
+  //     yValue: e[fieldMap.salary]
+  //   };
+  // });
+
+  // graphScatterPlot(conformityAndSalary, domElement, {
+  //   xAxis: {
+  //     text: 'Conformidad',
+  //     domain: [0, 5]
+  //   },
+  //   yAxis: {
+  //     text: 'Salario'
+  //     // domain: [0,5  ]
+  //   },
+  //   width: DEFAULT_WIDTH,
+  //   height: DEFAULT_HEIGHT,
+  //   id: 'scatterPlotConformitySalary'
+  // });
 }
 
 function applyFilters(data, profesion, province, dedication) {
@@ -257,7 +309,7 @@ function applyFilters(data, profesion, province, dedication) {
 function documentReady() {
   'use strict';
 
-  function updateAll() {
+  function getDedication(){
     var dedication = [];
     if(checkBoxFullTime.checked) {
       dedication.push('Full-Time');
@@ -268,6 +320,13 @@ function documentReady() {
     if(checkBoxRemote.checked) {
       dedication.push('Remoto');
     }
+
+    return dedication;
+  }
+
+  function updateAll() {
+    var dedication = getDedication();
+
     var filteredData = applyFilters(window.analisis, profesionSelect.value, provinceSelect.value, dedication);
 
     fieldMap = fieldMap || window.analisis.fieldMap;
@@ -312,7 +371,8 @@ function documentReady() {
   var fieldMap;
 
   profesionSelect.addEventListener('change', function() {
-    var filteredData = applyFilters(window.analisis, profesionSelect.value, provinceSelect.value, workingHoursSelect.value);
+    var dedication = getDedication();
+    var filteredData = applyFilters(window.analisis, profesionSelect.value, provinceSelect.value, dedication);
 
     fieldMap = fieldMap || window.analisis.fieldMap;
 
@@ -373,7 +433,7 @@ function documentReady() {
 }
 
 function updateResponsesText(number) {
-    document.querySelector('#dynamicGraphs h2').innerHTML = 'Cantidad de registros: ' + number;
+    document.querySelector('#dynamicGraphs h2').innerHTML = 'Cantidad de datos: ' + number;
     document.querySelector('#dynamicGraphs h2').style.display = 'block';
 }
 
@@ -1081,9 +1141,9 @@ function updateHistogram(domElement, data) {
 
     svg.selectAll('.bar text').remove();
     return;
-  } else {
-    svg.select('.no-data').remove();
   }
+  
+  svg.selectAll('.no-data').remove();
 
   histData = d3.layout.histogram()
     .bins(x.ticks(options.bins))(data);
@@ -1155,7 +1215,7 @@ function updatePieChart(domElement, data) {
     return;
   }
 
-  svg.select('g .no-data').remove();
+  svg.selectAll('g .no-data').remove();
 
   data = pseudoShuffle(data);
 
@@ -1278,8 +1338,8 @@ function generateGraphData(data, fieldMap) {
   .map(function(e) {
     return { name: e[0], value: e[1] };
   })
-  .filter(function(e) {
-    return e.value !==1;
+  .filter(function(e, i, arr) {
+    return arr.length < 3 || e.value !==1;
   });
 
   return {
