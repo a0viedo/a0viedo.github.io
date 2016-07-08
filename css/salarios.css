@@ -1,0 +1,112 @@
+html, body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: #195E08;
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+/*.x.axis path {
+  display: none;
+}*/
+
+
+.axis .y {
+  width: 200px
+}
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+.histogram-text {
+  fill:white;
+}
+
+
+path.slice{
+  stroke-width:2px;
+}
+
+polyline{
+  opacity: .3;
+  stroke: black;
+  stroke-width: 2px;
+  fill: none;
+}
+
+.hidden {
+  display:none;
+}
+
+.line {
+  fill: none;
+  stroke: #444;
+  stroke-width: 1.5px;
+}
+
+#selectContainer {
+  position: fixed;
+  background-color: #E5E4E4;
+  top: 0;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+#dynamicGraphs {
+  margin-top: 35px;
+  text-align: center;
+}
+
+#dynamicGraphs h2 {
+  display: 'none';
+}
+
+#staticGraphs {
+  text-align: center;
+  margin-bottom: 50px
+}

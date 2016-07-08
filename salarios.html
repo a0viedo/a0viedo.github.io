@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+
+  <link rel="stylesheet" href="/css/salarios.css">
+  <title>Salarios en tecnología</title>
+  <!-- google analytics-->
+  <script type="text/javascript">(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-36283546-3', 'auto');
+  ga('send', 'pageview');
+  </script>
+</head>
+<body>
+  <main>
+    <div id="selectContainer">
+      <select id="profesionSelect">
+        <option value="*">Todas las profesiones</option>
+        <option value="HelpDesk">HelpDesk</option>
+        <option value="QA / Tester">QA / Tester</option>
+        <option value="PM">PM</option>
+        <option value="Networking">Networking</option>
+        <option value="DBA">DBA</option>
+        <option value="Designer">Designer</option>
+        <option value="Developer">Developer</option>
+        <option value="Storage / Backup">Storage / Backup</option>
+        <option value="SysAdmin / DevOps">SysAdmin / DevOps</option>
+      </select>
+      <select id="provinceSelect">
+        <option value="*">Todas las provincias</option>
+        <option value="CABA">CABA</option>
+        <option value="Catamarca">Catamarca</option>
+        <option value="Chaco">Chaco</option>
+        <option value="Chubut">Chubut</option>
+        <option value="Córdoba">Córdoba</option>
+        <option value="Corrientes">Corrientes</option>
+        <option value="Entre Ríos">Entre Ríos</option>
+        <option value="Formosa">Formosa</option>
+        <option value="GBA">GBA</option>
+        <option value="Jujuy">Jujuy</option>
+        <option value="La Pampa">La Pampa</option>
+        <option value="La Rioja">La Rioja</option>
+        <option value="Mendoza">Mendoza</option>
+        <option value="Misiones">Misiones</option>
+        <option value="Neuquén">Neuquén</option>
+        <option value="Río Negro">Río Negro</option>
+        <option value="Salta">Salta</option>
+        <option value="San Juan">San Juan</option>
+        <option value="San Luis">San Luis</option>
+        <option value="Santa Cruz">Santa Cruz</option>
+        <option value="Santa Fe">Santa Fe</option>
+        <option value="Santiago del Estero">Santiago del Estero</option>
+        <option value="Tierra del Fuego">Tierra del Fuego</option>
+        <option value="Tucumán">Tucumán</option>
+      </select>
+      <input type="checkbox" id="checkBoxFullTime" value="Full-Time" checked="true"> <label for="checkBoxFulltime">Full-time</label>
+      <input type="checkbox" id="checkBoxPartTime" value="Part-Time" checked="true"> <label for="checkBoxParttime">Part-time</label>
+      <input type="checkbox" id="checkBoxRemoto" value="Part-Time" checked="true"> <label for="checkBoxRemoto">Remoto</label>
+    </div>
+
+    <div id="dynamicGraphs">
+        <h1>Salarios en tecnología</h1>
+        <h2></h2>
+    </div>
+
+    <div id="staticGraphs">
+      <h2>Todas las provincias</h2>
+    </div>
+  </main>
+</body>
+  <script src="//d3js.org/d3.v3.min.js"></script>
+  <script src="/js/d3-tip.js"></script>
+  <script src="/js/salarios.js"></script>
+</html>
