@@ -2,6 +2,41 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://elendur.com/2016/10/06/know-your-stack-traces-en/</loc>
+    
+    <lastmod>2016-10-06T14:18:22.084Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://elendur.com/js/salarios.js</loc>
+    
+    <lastmod>2016-07-08T20:17:11.613Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://elendur.com/css/salarios.css</loc>
+    
+    <lastmod>2016-07-08T14:46:11.573Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://elendur.com/js/d3.v3.min.js</loc>
+    
+    <lastmod>2016-07-08T13:57:45.548Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://elendur.com/js/d3-tip.js</loc>
+    
+    <lastmod>2016-07-06T01:10:55.994Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://elendur.com/2016/06/28/setting-up-hexo-en/</loc>
     
     <lastmod>2016-06-28T12:21:45.892Z</lastmod>
