@@ -1,0 +1,24 @@
+{
+  "name": "a0viedo.github.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run lint",
+    "lint": "eslint js/salarios.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/a0viedo/a0viedo.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/a0viedo/a0viedo.github.io/issues"
+  },
+  "homepage": "https://github.com/a0viedo/a0viedo.github.io#readme",
+  "dependencies": {
+    "eslint": "^3.11.1"
+  }
+}
