@@ -1,7 +1,7 @@
 {
   "name": "a0viedo.github.io",
   "version": "1.0.0",
-  "description": "",
+  "description": "Website for https://elendur.com",
   "main": "index.js",
   "scripts": {
     "test": "npm run lint",
