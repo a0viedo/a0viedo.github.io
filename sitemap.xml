@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://elendur.com/2017/01/31/configuring-a-local-docker-registry-en/</loc>
+    
+    <lastmod>2017-01-31T19:24:46.808Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://elendur.com/2016/10/06/know-your-stack-traces-en/</loc>
     
-    <lastmod>2016-10-06T14:54:14.070Z</lastmod>
+    <lastmod>2017-01-31T17:55:22.390Z</lastmod>
     
   </url>
   

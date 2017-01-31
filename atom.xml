@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://elendur.com/"/>
-  <updated>2016-10-06T14:54:14.070Z</updated>
+  <updated>2017-01-31T19:24:46.808Z</updated>
   <id>http://elendur.com/</id>
   
   <author>
@@ -16,11 +16,43 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Configuring a local Docker Registry over HTTP</title>
+    <link href="http://elendur.com/2017/01/31/configuring-a-local-docker-registry-en/"/>
+    <id>http://elendur.com/2017/01/31/configuring-a-local-docker-registry-en/</id>
+    <published>2017-01-31T00:00:00.000Z</published>
+    <updated>2017-01-31T19:24:46.808Z</updated>
+    
+    <content type="html">&lt;p&gt;I struggled for a few hours to get the right set up for a local &lt;a href=&quot;https://docs.docker.com/registry/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Docker Registry&lt;/a&gt;. This blog post is what ended up working for me.&lt;/p&gt;
+&lt;h2 id=&quot;Motivation&quot;&gt;&lt;a href=&quot;#Motivation&quot; class=&quot;headerlink&quot; title=&quot;Motivation&quot;&gt;&lt;/a&gt;Motivation&lt;/h2&gt;&lt;p&gt;I’m currently working on a project that’s planning to use &lt;a href=&quot;https://www.docker.com/products/docker-swarm&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Docker Swarm&lt;/a&gt; and for making the Docker images availables for all nodes it made a lot of sense setting up a private registry.&lt;br&gt;The recommended configuration is to set up your private registry with TLS but I could think of a lot of use cases where your registry is not exposed publicly and you want your instances to connect to it using good ‘ol HTTP.&lt;/p&gt;
+&lt;h2 id=&quot;RTFM&quot;&gt;&lt;a href=&quot;#RTFM&quot; class=&quot;headerlink&quot; title=&quot;RTFM&quot;&gt;&lt;/a&gt;RTFM&lt;/h2&gt;&lt;p&gt;Docker offers a very simple way to fire up a local repository in the &lt;a href=&quot;https://hub.docker.com/_/registry/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hub’s documentation&lt;/a&gt;.&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;$ docker run -d -p 5000:5000 --restart always --name registry registry:2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;That’s literally the only command you have to run to get your registry running, which is great.&lt;br&gt;But everything comes with a catch, right? &lt;strong&gt;Doing this will allow you to pull, push and search images refering only to &lt;em&gt;localhost&lt;/em&gt; and if you want to access that registry from another host you will not be able to&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Docker Engine clients are hardwired to enforce TLS for the communication used with registries so you’ll have to add an &lt;em&gt;insecure registry&lt;/em&gt;. There’s even a &lt;a href=&quot;https://docs.docker.com/registry/insecure/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;documentation page&lt;/a&gt; for how to set it up but it appears to not apply for those operating systems that are using systemd and lucky me, I was running Ubuntu 16.04 on my instances.&lt;/p&gt;
+&lt;p&gt;After an extensive session of googling around I found an &lt;a href=&quot;https://github.com/docker/docker/issues/28321&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;issue&lt;/a&gt; from &lt;a href=&quot;https://github.com/ktamiola&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Kamil Tamiola&lt;/a&gt;, aka the MVP of the story, with something that was actually working.&lt;/p&gt;
+&lt;p&gt;Modifying the file under &lt;code&gt;/etc/docker/daemon.json&lt;/code&gt; with:&lt;/p&gt;
+&lt;figure class=&quot;highlight json&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;attr&quot;&gt;&quot;insecure-registries&quot;&lt;/span&gt;: [&lt;span class=&quot;string&quot;&gt;&quot;yourRegistryIP:5000&quot;&lt;/span&gt;]&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;and restarting docker afterwards (&lt;code&gt;sudo service docker restart&lt;/code&gt;) worked like a charm.&lt;br&gt;You should be able to confirm that the insecure registry was added by running &lt;code&gt;docker info&lt;/code&gt;.&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;I struggled for a few hours to get the right set up for a local &lt;a href=&quot;https://docs.docker.com/registry/&quot; target=&quot;_blank&quot; rel=&quot;external
+    
+    </summary>
+    
+    
+      <category term="docker" scheme="http://elendur.com/tags/docker/"/>
+    
+      <category term="registry" scheme="http://elendur.com/tags/registry/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Know Your Stack Traces</title>
     <link href="http://elendur.com/2016/10/06/know-your-stack-traces-en/"/>
     <id>http://elendur.com/2016/10/06/know-your-stack-traces-en/</id>
-    <published>2016-10-06T14:54:14.070Z</published>
-    <updated>2016-10-06T14:54:14.070Z</updated>
+    <published>2016-10-06T00:00:00.000Z</published>
+    <updated>2017-01-31T17:55:22.390Z</updated>
     
     <content type="html">&lt;p&gt;The last couple of months I’ve been working in an application with a microservices architecture. I had to debug message errors like “Something went wrong with your request” with scarce and non-descriptive stack traces.&lt;br&gt;While trying to find those errors I learned a few things.&lt;/p&gt;
 &lt;h2 id=&quot;Stack-this-stack-that&quot;&gt;&lt;a href=&quot;#Stack-this-stack-that&quot; class=&quot;headerlink&quot; title=&quot;Stack this, stack that&quot;&gt;&lt;/a&gt;Stack this, stack that&lt;/h2&gt;&lt;p&gt;The stack is the part of memory that keeps track at all times the functions invoked until a specific moment in your program. &lt;strong&gt;Think of a stack trace as a set of entries with an order of precedence&lt;/strong&gt;, generally from top to bottom from most recent to older functions respectively.&lt;/p&gt;
