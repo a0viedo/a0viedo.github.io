@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://elendur.com/"/>
-  <updated>2017-01-31T19:24:46.808Z</updated>
+  <updated>2017-02-14T17:27:06.238Z</updated>
   <id>http://elendur.com/</id>
   
   <author>
@@ -14,6 +14,57 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Docker Swarm Architecture</title>
+    <link href="http://elendur.com/2017/02/14/docker-swarm-architecture-en/"/>
+    <id>http://elendur.com/2017/02/14/docker-swarm-architecture-en/</id>
+    <published>2017-02-14T00:00:00.000Z</published>
+    <updated>2017-02-14T17:27:06.238Z</updated>
+    
+    <content type="html">&lt;p&gt;I’m working on a Docker Swarm deployment to production and these are some of my thoughts on how things should be. In my case the deployment is on AWS but I’m deliberately skipping the AWS-specific parts on this blog post.&lt;/p&gt;
+&lt;h2 id=&quot;Know-the-Basics&quot;&gt;&lt;a href=&quot;#Know-the-Basics&quot; class=&quot;headerlink&quot; title=&quot;Know the Basics&quot;&gt;&lt;/a&gt;Know the Basics&lt;/h2&gt;&lt;p&gt;A swarm will consist of &lt;strong&gt;&lt;em&gt;managers&lt;/em&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;em&gt;nodes&lt;/em&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;em&gt;services&lt;/em&gt;&lt;/strong&gt;.&lt;br&gt; A &lt;strong&gt;node&lt;/strong&gt; is basically a worker of your swarm, it will only receive instructions. &lt;br&gt; A &lt;strong&gt;manager&lt;/strong&gt; is a node that can give instructions to your swarm (i.e. creating and removing services). Managers can also run instances of services.&lt;/p&gt;
+&lt;p&gt;A &lt;strong&gt;service&lt;/strong&gt; can have multiple replicas and Docker will distribute them evenly across your nodes - if you have 3 (active) nodes and a service with 3 replicas, each node will have a running instance of that service.&lt;/p&gt;
+&lt;p&gt;For any service in the swarm, Docker will do a round-robin between the replicas (shameless plug, watch &lt;a href=&quot;https://www.youtube.com/watch?v=kpvbOzHUakA&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Load balancing is impossible&lt;/a&gt;). Docker call this feature of distributing incoming connections from outside the swarm &lt;em&gt;ingress load balancing&lt;/em&gt;. Is important to say that if you access a service from within the swarm it will also go through the built-in load balancer.&lt;/p&gt;
+&lt;p&gt;If you try to access a service on a node that’s not running it Docker will re-reoute the request to a node that has a running instance of that service.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://i.imgur.com/wssX9JZ.png&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;&lt;img src=&quot;https://i.imgur.com/wssX9JZ.png&quot; width=&quot;600&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Here the component labeled LB is serving as a reverse proxy and it will have to be able to discover new nodes in your swarm dynamically.&lt;/p&gt;
+&lt;h2 id=&quot;Networks&quot;&gt;&lt;a href=&quot;#Networks&quot; class=&quot;headerlink&quot; title=&quot;Networks&quot;&gt;&lt;/a&gt;Networks&lt;/h2&gt;&lt;p&gt;For my very basic setup I created an encrypted overlay network for - initially - all my services.&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;docker network create --driver overlay --subnet 10.0.9.0/24 --opt encrypted my-network&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;Of course you can create specific networks for groups of services but that will depend on your requirements and use cases.&lt;/p&gt;
+&lt;h2 id=&quot;Communication-between-services&quot;&gt;&lt;a href=&quot;#Communication-between-services&quot; class=&quot;headerlink&quot; title=&quot;Communication between services&quot;&gt;&lt;/a&gt;Communication between services&lt;/h2&gt;&lt;p&gt;By default Docker Swarm configures DNS service discovery for you so you will be able to access from a service to another service in your swarm via its name, if they share the same network.&lt;/p&gt;
+&lt;h2 id=&quot;Registry&quot;&gt;&lt;a href=&quot;#Registry&quot; class=&quot;headerlink&quot; title=&quot;Registry&quot;&gt;&lt;/a&gt;Registry&lt;/h2&gt;&lt;p&gt;In my case, I configured a private - HTTP only - registry to serve my Docker images (see &lt;a href=&quot;https://elendur.com/2017/01/31/configuring-a-local-docker-registry-en/&quot;&gt;Configuring a local Docker Registry&lt;/a&gt;). Since it wont be public and I only need it available in the virtual network of my instances I don’t see any reason why I should configure TLS on it.&lt;/p&gt;
+&lt;h2 id=&quot;Autoscalling-groups&quot;&gt;&lt;a href=&quot;#Autoscalling-groups&quot; class=&quot;headerlink&quot; title=&quot;Autoscalling groups&quot;&gt;&lt;/a&gt;Autoscalling groups&lt;/h2&gt;&lt;p&gt;It’s very important to have redundancy of managers in your swarm because &lt;strong&gt;if you have only one manager and something goes wrong, you will lose the entire swarm&lt;/strong&gt;. That being said, it’s also important to have an odd number of managers due to the nature of the algorithm that Swarm uses to choose their leader (read more in &lt;a href=&quot;https://docs.docker.com/engine/swarm/admin_guide/#/distribute-manager-nodes&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;this section&lt;/a&gt;). You should also consistently &lt;a href=&quot;https://docs.docker.com/engine/swarm/admin_guide/#/back-up-the-swarm-state&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;backup the swarm state&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Ideally you will count with two autoscalling groups, one for your managers and another one for your nodes.&lt;/p&gt;
+&lt;p&gt;For small clusters I see no problem on letting the managers run service’s instances but in big clusters you should have only dedicated managers - see how to do it &lt;a href=&quot;https://docs.docker.com/engine/swarm/admin_guide/#/run-manager-only-nodes&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;Conclusion&quot;&gt;&lt;a href=&quot;#Conclusion&quot; class=&quot;headerlink&quot; title=&quot;Conclusion&quot;&gt;&lt;/a&gt;Conclusion&lt;/h2&gt;&lt;p&gt;This blog post focus on architecture decisions but definitely the development and deployment pipelines are two other important parts that are missing. I may write something once I’m more familiar with them.&lt;/p&gt;
+&lt;p&gt;If you have configured your swarm in a different way or I’m missing some neat features tell me in the comments!&lt;/p&gt;
+&lt;h2 id=&quot;Other-resources&quot;&gt;&lt;a href=&quot;#Other-resources&quot; class=&quot;headerlink&quot; title=&quot;Other resources&quot;&gt;&lt;/a&gt;Other resources&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://docs.docker.com/engine/swarm/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Docker Swarm features&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://docs-stage.docker.com/v1.10/swarm/swarm_at_scale/01-about/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Learn application architecture&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://blog.scottlogic.com/2016/08/30/docker-1-12-swarm-mode-round-robin.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Docker 1.12 Swarm Mode - Round Robin inside and out&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://docs.docker.com/engine/swarm/raft/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Raft consensus in swarm mode&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;Thanks to &lt;a href=&quot;https://twitter.com/mvaldesdeleon&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Martin&lt;/a&gt; and &lt;a href=&quot;https://twitter.com/gonrial&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Ezequiel&lt;/a&gt; for reviewing this post and helping me to tune up the diagram.&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;I’m working on a Docker Swarm deployment to production and these are some of my thoughts on how things should be. In my case the deployme
+    
+    </summary>
+    
+    
+      <category term="docker" scheme="http://elendur.com/tags/docker/"/>
+    
+      <category term="architecture" scheme="http://elendur.com/tags/architecture/"/>
+    
+      <category term="docker-swarm" scheme="http://elendur.com/tags/docker-swarm/"/>
+    
+      <category term="containers" scheme="http://elendur.com/tags/containers/"/>
+    
+  </entry>
   
   <entry>
     <title>Configuring a local Docker Registry over HTTP</title>

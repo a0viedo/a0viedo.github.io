@@ -309,9 +309,8 @@ function applyFilters(data, profesion, province, dedication) {
 function documentReady() {
   'use strict';
 
-  function getDedication() {
+  function getDedication(){
     var dedication = [];
-
     if(checkBoxFullTime.checked) {
       dedication.push('Full-Time');
     }
@@ -434,8 +433,8 @@ function documentReady() {
 }
 
 function updateResponsesText(number) {
-  document.querySelector('#dynamicGraphs h2').innerHTML = 'Cantidad de datos: ' + number;
-  document.querySelector('#dynamicGraphs h2').style.display = 'block';
+    document.querySelector('#dynamicGraphs h2').innerHTML = 'Cantidad de datos: ' + number;
+    document.querySelector('#dynamicGraphs h2').style.display = 'block';
 }
 
 function min(data) {
@@ -535,7 +534,7 @@ function graphBarChart(data, parentNode, options) {
       bottom: 20,
       left: 20
     },
-    width = options.width, // - margins.left - margins.right,
+    width = options.width // - margins.left - margins.right,
     height = options.height - margins.top - margins.bottom,
     padding = options.padding;
 
@@ -817,7 +816,8 @@ function graphPieChart(data, parentNode, options) {
     return compose(arc, interpolate);
   }
 
-  var width = options.width,
+  var margins = options.margins,
+    width = options.width,
     height = options.height,
     radius = Math.min(width, height) / 2,
     svg,
@@ -863,7 +863,6 @@ function graphPieChart(data, parentNode, options) {
     .outerRadius(radius * 0.9);
 
   var xOffset = options.xOffset || 0;
-
   svg.attr('transform', 'translate(' + ((width / 2) + xOffset) + ',' + height / 2 + ')');
 
   key = pick('data.name');
@@ -1004,88 +1003,88 @@ function addPieChartLabels(params) {
     .on('mouseout', tip.hide);
 }
 
-// function graphScatterPlot(data, parentNode, options) {
-//   var margin = options.margins || {top: 20, right: 20, bottom: 40, left: 60},
-//     width = options.width - margin.left - margin.right,
-//     height = options.height - margin.top - margin.bottom;
+function graphScatterPlot(data, parentNode, options) {
+  var margin = options.margins || {top: 20, right: 20, bottom: 40, left: 60},
+    width = options.width - margin.left - margin.right,
+    height = options.height - margin.top - margin.bottom;
 
-//   /*
-//    * value accessor - returns the value to encode for a given data object.
-//    * scale - maps value to a visual display encoding, such as a pixel position.
-//    * map function - maps from data value to display value
-//    * axis - setsup axis
-//    */
-//   // setup x
-//   var xValue = pick('xValue'), // data -> value
-//     xScale = d3.scale.linear().range([0, width]), // value -> display
-//     xMap = compose(xScale, xValue), // data -> display
-//     xAxis = d3.svg.axis().scale(xScale).orient('bottom');
+  /*
+   * value accessor - returns the value to encode for a given data object.
+   * scale - maps value to a visual display encoding, such as a pixel position.
+   * map function - maps from data value to display value
+   * axis - setsup axis
+   */
+  // setup x
+  var xValue = pick('xValue'), // data -> value
+    xScale = d3.scale.linear().range([0, width]), // value -> display
+    xMap = compose(xScale, xValue), // data -> display
+    xAxis = d3.svg.axis().scale(xScale).orient('bottom');
 
-//   // setup y
-//   var yValue = pick('yValue'), // data -> value
-//     yScale = d3.scale.linear().range([height, 0]), // value -> display
-//     yMap = compose(yScale, yValue), // data -> display
-//     yAxis = d3.svg.axis().scale(yScale).orient('left');
+  // setup y
+  var yValue = pick('yValue'), // data -> value
+    yScale = d3.scale.linear().range([height, 0]), // value -> display
+    yMap = compose(yScale, yValue), // data -> display
+    yAxis = d3.svg.axis().scale(yScale).orient('left');
 
-//   // add the graph canvas to the body of the webpage
-//   var svg = d3.select(parentNode).append('svg')
-//       .attr('width', width + margin.left + margin.right)
-//       .attr('height', height + margin.top + margin.bottom)
-//     .append('g')
-//       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+  // add the graph canvas to the body of the webpage
+  var svg = d3.select(parentNode).append('svg')
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
+    .append('g')
+      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-//   // add the tooltip area to the webpage
-//   d3.select('body').append('div')
-//       .attr('class', 'tooltip')
-//       .style('opacity', 0);
+  // add the tooltip area to the webpage
+  d3.select('body').append('div')
+      .attr('class', 'tooltip')
+      .style('opacity', 0);
 
-//   // don't want dots overlapping axis, so add in buffer to data domain
-//   if(options.xAxis.domain) {
-//     xScale.domain(options.xAxis.domain);
-//   } else {
-//     xScale.domain([d3.min(data, xValue) -1, d3.max(data, xValue)+1]);
-//   }
+  // don't want dots overlapping axis, so add in buffer to data domain
+  if(options.xAxis.domain) {
+    xScale.domain(options.xAxis.domain);
+  } else {
+    xScale.domain([d3.min(data, xValue) -1, d3.max(data, xValue)+1]);
+  }
   
-//   if(options.yAxis.domain) {
-//     yScale.domain(options.yAxis.domain);
-//   } else {
-//     yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
-//   }
+  if(options.yAxis.domain) {
+    yScale.domain(options.yAxis.domain);
+  } else {
+    yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+  }
 
-//   // x-axis
-//   svg.append('g')
-//     .attr('class', 'x axis')
-//     .attr('transform', 'translate(0,' + height + ')')
-//     .call(xAxis)
-//     .append('text')
-//     .attr('class', 'label')
-//     .attr('x', width)
-//     .attr('y', -6)
-//     .style('text-anchor', 'end')
-//     .text(options.xAxis.text);
+  // x-axis
+  svg.append('g')
+    .attr('class', 'x axis')
+    .attr('transform', 'translate(0,' + height + ')')
+    .call(xAxis)
+    .append('text')
+    .attr('class', 'label')
+    .attr('x', width)
+    .attr('y', -6)
+    .style('text-anchor', 'end')
+    .text(options.xAxis.text);
 
-//   // y-axis
-//   svg.append('g')
-//     .attr('class', 'y axis')
-//     .call(yAxis)
-//     .append('text')
-//     .attr('class', 'label')
-//     .attr('transform', 'rotate(-90)')
-//     .attr('y', 6)
-//     .attr('dy', '.71em')
-//     .style('text-anchor', 'end')
-//     .text(options.yAxis.text);
+  // y-axis
+  svg.append('g')
+    .attr('class', 'y axis')
+    .call(yAxis)
+    .append('text')
+    .attr('class', 'label')
+    .attr('transform', 'rotate(-90)')
+    .attr('y', 6)
+    .attr('dy', '.71em')
+    .style('text-anchor', 'end')
+    .text(options.yAxis.text);
 
-//   // draw dots
-//   svg.selectAll('.dot')
-//     .data(data)
-//     .enter().append('circle')
-//     .attr('class', 'dot')
-//     .attr('r', 3.5)
-//     .attr('cx', xMap)
-//     .attr('cy', yMap)
-//     .style('fill', 'black');
-// }
+  // draw dots
+  svg.selectAll('.dot')
+    .data(data)
+    .enter().append('circle')
+    .attr('class', 'dot')
+    .attr('r', 3.5)
+    .attr('cx', xMap)
+    .attr('cy', yMap)
+    .style('fill', 'black');
+}
 
 function saveGraphInfo(id, info) {
   var selector;
@@ -1223,7 +1222,7 @@ function updatePieChart(domElement, data) {
   pie = domElement.graph.pie;
   path = svg.datum(data).selectAll('path');
   
-  path.data(pie);
+  path = path.data(pie);
 
   color = d3.scale.ordinal()
     .domain(data.map(pick('name')))

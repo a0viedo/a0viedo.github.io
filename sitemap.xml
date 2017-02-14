@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://elendur.com/2017/02/14/docker-swarm-architecture-en/</loc>
+    
+    <lastmod>2017-02-14T17:27:06.238Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://elendur.com/2017/01/31/configuring-a-local-docker-registry-en/</loc>
     
     <lastmod>2017-01-31T19:24:46.808Z</lastmod>
