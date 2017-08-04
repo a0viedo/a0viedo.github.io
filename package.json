@@ -4,7 +4,7 @@
   "description": "Website for https://elendur.com",
   "main": "index.js",
   "scripts": {
-    "test": "npm run lint",
+    "test": "echo 'hi'",
     "lint": "eslint js/salarios.js"
   },
   "repository": {
