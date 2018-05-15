@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://elendur.com/2018/05/15/run-lighthouse-for-every-pr-en/</loc>
+    
+    <lastmod>2018-05-15T13:09:07.310Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://elendur.com/2018/05/13/node-clinic-en/</loc>
+    
+    <lastmod>2017-02-21T15:09:29.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://elendur.com/2017/02/14/docker-swarm-architecture-en/</loc>
     
     <lastmod>2017-02-14T17:27:06.238Z</lastmod>

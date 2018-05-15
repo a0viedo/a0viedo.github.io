@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://elendur.com/"/>
-  <updated>2017-02-14T17:27:06.238Z</updated>
+  <updated>2018-05-15T13:09:07.310Z</updated>
   <id>http://elendur.com/</id>
   
   <author>
@@ -14,6 +14,87 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Running Lighthouse for every PR with Travis CI</title>
+    <link href="http://elendur.com/2018/05/15/run-lighthouse-for-every-pr-en/"/>
+    <id>http://elendur.com/2018/05/15/run-lighthouse-for-every-pr-en/</id>
+    <published>2018-05-15T00:00:00.000Z</published>
+    <updated>2018-05-15T13:09:07.310Z</updated>
+    
+    <content type="html">&lt;p&gt;We announced the &lt;a href=&quot;https://nodeconf.com.ar&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;NodeConf Argentina 2018&lt;/a&gt;‘s website two weeks ago and while I was helping with a few things on readability and user experience I thought on trying &lt;a href=&quot;https://developers.google.com/web/tools/lighthouse/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;LightHouse&lt;/a&gt; on it through the Chrome Dev tools.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://i.imgur.com/fhZsf8v.jpg&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;&lt;img src=&quot;https://i.imgur.com/fhZsf8v.jpg&quot; alt=&quot;picture of Audits tab in Chrome Developer Tools&quot; width=&quot;600&quot;&gt;&lt;/a&gt;&lt;br&gt;Open the Developer Tools and select the Audits tab to run Lighthouse.&lt;/p&gt;
+
+&lt;p&gt;At that moment accessibility was not that good (59/100) and I knew it was important to improve on it. It was then when I started thinking on ways to foster collaboration and quantifying or measuring improvements. Automation + GitHub might be an option; not only for the case on accessibility but it could also report improvements on performance, SEO and best practices.&lt;/p&gt;
+&lt;h2 id=&quot;Triggering-a-build-on-Pull-Requests&quot;&gt;&lt;a href=&quot;#Triggering-a-build-on-Pull-Requests&quot; class=&quot;headerlink&quot; title=&quot;Triggering a build on Pull Requests&quot;&gt;&lt;/a&gt;Triggering a build on Pull Requests&lt;/h2&gt;&lt;p&gt;I wanted to trigger a build &lt;strong&gt;only&lt;/strong&gt; when branches or features are “completed”, that is usually the case when you open a PR. There is also a restriction in the tool for running Lighthouse from the shell that won’t run for branches builds on Travis CI. &lt;/p&gt;
+&lt;p&gt;After a few minutes of trial and error with Travis’ configuration settings I managed to get the behaviour I was looking for. These ended up as the settings for the project:&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://imgur.com/Skk5keW.jpg&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;&lt;img src=&quot;https://imgur.com/Skk5keW.jpg&quot; alt=&quot;picture of Travis CI configuration&quot; width=&quot;600&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+
+&lt;p&gt;And I added this to the &lt;code&gt;.travis.yml&lt;/code&gt; (you might want to change the branch to “master”):&lt;/p&gt;
+&lt;figure class=&quot;highlight yaml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;branches:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;attr&quot;&gt;  only:&lt;/span&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;bullet&quot;&gt;    -&lt;/span&gt; gh-pages&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h2 id=&quot;lighthouse-ci&quot;&gt;&lt;a href=&quot;#lighthouse-ci&quot; class=&quot;headerlink&quot; title=&quot;lighthouse-ci&quot;&gt;&lt;/a&gt;lighthouse-ci&lt;/h2&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/ebidel/lighthouse-ci&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;lighthouse-ci&lt;/a&gt; is a great package that lets you run Lighthouse from the shell and can report back results directly into GitHub. Their &lt;a href=&quot;https://github.com/ebidel/lighthouse-ci/blob/master/README.md&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;documentation&lt;/a&gt; is great! In summary: you will need to get an API key, configure that key in Travis CI, add the package as one of your dev dependencies and run &lt;code&gt;npm run lh https://yourcoolwebsite.com&lt;/code&gt; at last.&lt;/p&gt;
+&lt;p&gt;After that npm script finishes you should see a comment on your PR:&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://i.imgur.com/saubxSE.jpg&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;&lt;img src=&quot;https://i.imgur.com/saubxSE.jpg&quot; alt=&quot;picture of lighthouse-ci&#39;s comment&quot; width=&quot;600&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I’ve seen some inconsistencies on Lighthouse’s audits from Chrome and from the shell, like the performance varying, but I haven’t found anything that could cause it. Maybe I’ll post a follow up issue on the repo.&lt;/p&gt;
+&lt;p&gt;If you want to know more details on how I configured Surge.sh to run on Travis you can read this &lt;a href=&quot;https://medium.com/onfido-tech/travis-surge-github-auto-deploy-every-pr-branch-and-tag-a6c8c790831f&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;blog post&lt;/a&gt;.&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;We announced the &lt;a href=&quot;https://nodeconf.com.ar&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;NodeConf Argentina 2018&lt;/a&gt;‘s website two weeks ago and
+    
+    </summary>
+    
+    
+      <category term="ci" scheme="http://elendur.com/tags/ci/"/>
+    
+      <category term="travis" scheme="http://elendur.com/tags/travis/"/>
+    
+      <category term="lighthouse" scheme="http://elendur.com/tags/lighthouse/"/>
+    
+      <category term="accessibility" scheme="http://elendur.com/tags/accessibility/"/>
+    
+      <category term="performance" scheme="http://elendur.com/tags/performance/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Configurando un Docker Registry local con HTTP</title>
+    <link href="http://elendur.com/2018/05/13/node-clinic-en/"/>
+    <id>http://elendur.com/2018/05/13/node-clinic-en/</id>
+    <published>2018-05-13T16:50:18.821Z</published>
+    <updated>2017-02-21T15:09:29.000Z</updated>
+    
+    <content type="html">&lt;p&gt;Node-clinic&lt;/p&gt;
+&lt;p&gt;The idea is that you should be able to instrument this in an environment other than your local env, could be staging or even production (that’s up to you).&lt;/p&gt;
+&lt;p&gt;Post-mortem is another important branch you should cover when deploying your applications. In this case I’m focusing on running processes.&lt;/p&gt;
+&lt;h2 id=&quot;Toolbox&quot;&gt;&lt;a href=&quot;#Toolbox&quot; class=&quot;headerlink&quot; title=&quot;Toolbox&quot;&gt;&lt;/a&gt;Toolbox&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Flamegraphs&lt;/li&gt;
+&lt;li&gt;Sunburst&lt;/li&gt;
+&lt;li&gt;Tree maps&lt;/li&gt;
+&lt;li&gt;Memory dumps&lt;/li&gt;
+&lt;li&gt;Core dumps&lt;/li&gt;
+&lt;li&gt;Call stacks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Profiling should be something that you can turn on and off easily.&lt;/p&gt;
+&lt;p&gt;When could llnode be useful to you? Memory? Post-mortem?&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Node-clinic&lt;/p&gt;
+&lt;p&gt;The idea is that you should be able to instrument this in an environment other than your local env, could be staging o
+    
+    </summary>
+    
+    
+      <category term="docker" scheme="http://elendur.com/tags/docker/"/>
+    
+      <category term="registry" scheme="http://elendur.com/tags/registry/"/>
+    
+  </entry>
   
   <entry>
     <title>Docker Swarm Architecture</title>
