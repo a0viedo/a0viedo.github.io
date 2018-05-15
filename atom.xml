@@ -61,42 +61,6 @@
   </entry>
   
   <entry>
-    <title>Configurando un Docker Registry local con HTTP</title>
-    <link href="http://elendur.com/2018/05/13/node-clinic-en/"/>
-    <id>http://elendur.com/2018/05/13/node-clinic-en/</id>
-    <published>2018-05-13T16:50:18.821Z</published>
-    <updated>2017-02-21T15:09:29.000Z</updated>
-    
-    <content type="html">&lt;p&gt;Node-clinic&lt;/p&gt;
-&lt;p&gt;The idea is that you should be able to instrument this in an environment other than your local env, could be staging or even production (that’s up to you).&lt;/p&gt;
-&lt;p&gt;Post-mortem is another important branch you should cover when deploying your applications. In this case I’m focusing on running processes.&lt;/p&gt;
-&lt;h2 id=&quot;Toolbox&quot;&gt;&lt;a href=&quot;#Toolbox&quot; class=&quot;headerlink&quot; title=&quot;Toolbox&quot;&gt;&lt;/a&gt;Toolbox&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;Flamegraphs&lt;/li&gt;
-&lt;li&gt;Sunburst&lt;/li&gt;
-&lt;li&gt;Tree maps&lt;/li&gt;
-&lt;li&gt;Memory dumps&lt;/li&gt;
-&lt;li&gt;Core dumps&lt;/li&gt;
-&lt;li&gt;Call stacks&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Profiling should be something that you can turn on and off easily.&lt;/p&gt;
-&lt;p&gt;When could llnode be useful to you? Memory? Post-mortem?&lt;/p&gt;
-</content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Node-clinic&lt;/p&gt;
-&lt;p&gt;The idea is that you should be able to instrument this in an environment other than your local env, could be staging o
-    
-    </summary>
-    
-    
-      <category term="docker" scheme="http://elendur.com/tags/docker/"/>
-    
-      <category term="registry" scheme="http://elendur.com/tags/registry/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Docker Swarm Architecture</title>
     <link href="http://elendur.com/2017/02/14/docker-swarm-architecture-en/"/>
     <id>http://elendur.com/2017/02/14/docker-swarm-architecture-en/</id>
