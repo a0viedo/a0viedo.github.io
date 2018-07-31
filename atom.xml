@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://elendur.com/"/>
-  <updated>2018-07-31T15:58:28.944Z</updated>
+  <updated>2018-07-31T16:03:21.376Z</updated>
   <id>http://elendur.com/</id>
   
   <author>
@@ -17,10 +17,10 @@
   
   <entry>
     <title>Using a headless Chrome to check social cards</title>
-    <link href="http://elendur.com/2018/07/29/using-a-headless-chrome-to-check-social-cards-en/"/>
-    <id>http://elendur.com/2018/07/29/using-a-headless-chrome-to-check-social-cards-en/</id>
-    <published>2018-07-29T00:00:00.000Z</published>
-    <updated>2018-07-31T15:58:28.944Z</updated>
+    <link href="http://elendur.com/2018/07/31/using-a-headless-chrome-to-check-social-cards-en/"/>
+    <id>http://elendur.com/2018/07/31/using-a-headless-chrome-to-check-social-cards-en/</id>
+    <published>2018-07-31T00:00:00.000Z</published>
+    <updated>2018-07-31T16:03:21.376Z</updated>
     
     <content type="html">&lt;p&gt;At this time of the year it’s when we, at NodeConf Argentina, start to announce new speakers. There are a few checks we usually run for the website after the HTML changes have been made. Those are:&lt;/p&gt;
 &lt;ul&gt;
