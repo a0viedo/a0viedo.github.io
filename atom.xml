@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://elendur.com/"/>
-  <updated>2018-05-15T13:09:07.310Z</updated>
+  <updated>2018-07-31T15:58:28.944Z</updated>
   <id>http://elendur.com/</id>
   
   <author>
@@ -14,6 +14,63 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Using a headless Chrome to check social cards</title>
+    <link href="http://elendur.com/2018/07/29/using-a-headless-chrome-to-check-social-cards-en/"/>
+    <id>http://elendur.com/2018/07/29/using-a-headless-chrome-to-check-social-cards-en/</id>
+    <published>2018-07-29T00:00:00.000Z</published>
+    <updated>2018-07-31T15:58:28.944Z</updated>
+    
+    <content type="html">&lt;p&gt;At this time of the year it’s when we, at NodeConf Argentina, start to announce new speakers. There are a few checks we usually run for the website after the HTML changes have been made. Those are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the changes don’t break anything&lt;/li&gt;
+&lt;li&gt;Twitter social card looks fine&lt;/li&gt;
+&lt;li&gt;Facebook social card looks fine&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I was growing tired of manually checking those last two for every change and thought “there must be a way to automate these checks, right?” Well turns out for Twitter I found a &lt;a href=&quot;https://cards-dev.twitter.com/validator&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Card Validator&lt;/a&gt; website and Facebook’s have their &lt;a href=&quot;https://developers.facebook.com/tools/debug/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;URL Debugger&lt;/a&gt;. This is how I managed to use &lt;a href=&quot;https://github.com/GoogleChrome/puppeteer&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Puppeteer&lt;/a&gt; to browse Twitter’s Card Validator, take a screenshot, upload it to Imgur and paste it as comment on a pull request.&lt;/p&gt;
+&lt;h2 id=&quot;First-things-first&quot;&gt;&lt;a href=&quot;#First-things-first&quot; class=&quot;headerlink&quot; title=&quot;First things first&quot;&gt;&lt;/a&gt;First things first&lt;/h2&gt;&lt;p&gt;I already had in place the configuration for TravisCI to run a build and deploy for every PR. If you want to know details on how I configured it you can read more on &lt;a href=&quot;https://elendur.com/2018/05/15/run-lighthouse-for-every-pr-en/&quot;&gt;Running Lighthouse for every PR with Travis CI&lt;/a&gt;. I was using Surge.sh to run deployments, but with Surge.sh’s subdomains a specific &lt;code&gt;robots.txt&lt;/code&gt; will be overwritten and it won’t work for the card validator.&lt;/p&gt;
+&lt;p&gt;I switched to &lt;a href=&quot;https://zeit.co/now&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;now&lt;/a&gt;, using public deployments turned out to be very straightforward.&lt;/p&gt;
+&lt;h2 id=&quot;Enter-the-puppeteer-world&quot;&gt;&lt;a href=&quot;#Enter-the-puppeteer-world&quot; class=&quot;headerlink&quot; title=&quot;Enter the puppeteer world&quot;&gt;&lt;/a&gt;Enter the puppeteer world&lt;/h2&gt;&lt;p&gt;I had Lighthouse running against the &lt;code&gt;now&lt;/code&gt; deployment and there were three things missing:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;get the list of modified files&lt;/li&gt;
+&lt;li&gt;use puppetteer to make a screenshot&lt;/li&gt;
+&lt;li&gt;upload the screenshot to a service&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;For the first step I used a git command that, if a source branch is not specified, it will get the diff files from target branch to your current branch (the one for the pull request). This is the command:&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;$ git diff --name-status master&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;For Puppeteer to take the screenshot I needed to impersonate my Twitter session, followed by entering the URL I wanted to check and the last thing would be clicking the “Preview Card” button. To impersonate a Twitter session I leveraged the &lt;code&gt;page.setCookie&lt;/code&gt; method and passed the cookie through an environment variable. Next I emulated a viewport that would work well for me, then navigated to the Card Validator page &lt;/p&gt;
+&lt;figure class=&quot;highlight js&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; page.goto(&lt;span class=&quot;string&quot;&gt;&#39;https://cards-dev.twitter.com/validator&#39;&lt;/span&gt;, &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    waitLoad: &lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;and used the output of step 1 with the deployment URL from now altogether (passed as argument)&lt;/p&gt;
+&lt;figure class=&quot;highlight js&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; page.click(textInputSelector);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;await&lt;/span&gt; page.keyboard.type(process.argv[&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;]);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;For the screenshot to display correctly I needed to wait for an iframe on the page to load. But it’s far from &lt;em&gt;perfect&lt;/em&gt; because I couldn’t find a consistent solution without additionally waiting for an arbitrary amount of milliseconds. The whole file is under 70 lines of code, you can check it out &lt;a href=&quot;https://github.com/nodeconfar/2018-website/blob/4e05c4d28d28a4c26a3498ff28064677e481b5ec/tools/screenshot.js&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;To complete step n° 3 I used &lt;a href=&quot;https://imgur.com/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Imgur&lt;/a&gt; and a handy bash &lt;a href=&quot;https://github.com/tremby/imgur.sh&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;script&lt;/a&gt; I found. You can specify your client ID by adding the IMGUR_CLIENT_ID environment variable to your CI builds.&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;a href=&quot;https://i.imgur.com/wssX9JZ.png&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;&lt;figure&gt;&lt;img src=&quot;https://i.imgur.com/4Wq6WiP.png&quot; width=&quot;600&quot;&gt;&lt;figcaption style=&quot;text-align: center&quot;&gt;How the end result looks like on a pull request.&lt;/figcaption&gt;&lt;/figure&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;Closing-thoughts&quot;&gt;&lt;a href=&quot;#Closing-thoughts&quot; class=&quot;headerlink&quot; title=&quot;Closing thoughts&quot;&gt;&lt;/a&gt;Closing thoughts&lt;/h2&gt;&lt;p&gt;It would be useful to have the social card check for Facebook too, but they upload images asynchronously making the crawling by Puppeteer more tedious.&lt;br&gt;At this point I will say that Puppeteer is a very powerful tool, but I also think there a few bits to be improved like the API for asynchronous events. Even after waiting for different events fired on a dynamically-inserted iframe, I had to add an arbitrary timer for the changes to be rendered.&lt;br&gt;And by the way, you shouldn’t really impersonate your Twitter session for anything serious. Just create a user for your automation.&lt;/p&gt;
+&lt;p&gt;Have you used Puppeteer in your CI flow? Let me know in the comments!&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;At this time of the year it’s when we, at NodeConf Argentina, start to announce new speakers. There are a few checks we usually run for t
+    
+    </summary>
+    
+    
+      <category term="javascript" scheme="http://elendur.com/tags/javascript/"/>
+    
+      <category term="ci" scheme="http://elendur.com/tags/ci/"/>
+    
+      <category term="automation" scheme="http://elendur.com/tags/automation/"/>
+    
+      <category term="puppeteer" scheme="http://elendur.com/tags/puppeteer/"/>
+    
+      <category term="chrome" scheme="http://elendur.com/tags/chrome/"/>
+    
+      <category term="headless" scheme="http://elendur.com/tags/headless/"/>
+    
+  </entry>
   
   <entry>
     <title>Running Lighthouse for every PR with Travis CI</title>
